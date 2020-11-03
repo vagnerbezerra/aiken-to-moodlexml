@@ -2,6 +2,7 @@ const moodleString = require('./xmlStrings');
 
 const availExercises = ['category', 'multichoice', 'essay', 'shortanswer', 'truefalse', 'description', 'cloze', 'numerical', 'matching', 'order'];
 const answerRegex = new RegExp(/^\s*answer:\s*/i);
+const tagRegex = new RegExp(/^\s*tag:\s*/i);
 const gfeedRegex = new RegExp(/^\s*gfeed\.\s*/i);
 const matchRegex = new RegExp(/^\s*match:?\s*/i);
 const feedbackRegex = new RegExp(/^\s*feedback:\s*/i);
@@ -91,6 +92,19 @@ const aikenToMoodleXML = (contents, callback, options = {}) => {
           question.feedback = lines[i].replace(feedbackRegex, '').replace('\r', '').escapeCode();
         } else if (matchRegex.test(lines[i])) {
           question.correctAnswer = [...(question.correctAnswer || []), lines[i].replace(matchRegex, '').replace('\r', '').escapeCode()];
+        } else if (tagRegex.test(lines[i])) {
+          question.tags = lines[i]
+            .replace(tagRegex, '')
+            .replace('\r', '')
+            .split(',')
+            .map((r) => {
+              try {
+                return typeof r === 'string' ? JSON.parse(r.toLowerCase()) : JSON.parse(r);
+              } catch (e) {
+                return r;
+              }
+            });
+          console.log(question.tags);
         } else {
           question.question += `\n${lines[i]}`;
         }
@@ -104,9 +118,17 @@ const aikenToMoodleXML = (contents, callback, options = {}) => {
         if (options.penalty) {
           question.fractions = question.answers.map((_a, j) => {
             if (question.correctAnswer.indexOf(j) === -1) {
-              return -Math.round(10000 / (question.answers.length - 1)) / 100;
+              return -(100/question.correctAnswer.length).toFixed(4);
             }
-            return Math.round(10000 / question.correctAnswer.length) / 100;
+            return (100/question.correctAnswer.length).toFixed(4);
+          });
+        }
+        if (!options.penalty && question.answers.length > 1) {
+          question.fractions = question.answers.map((_a, j) => {
+            if (question.correctAnswer.indexOf(j) === -1) {
+              return 0;
+            }
+            return (100/question.correctAnswer.length).toFixed(4);
           });
         }
         if (question.single) {

@@ -21,7 +21,7 @@ const categoryHierarchy = (categories) => {
 	return defCats.map((c,i)=>category(defCats.slice(0,i+1).join("/"))).join("");
 }
 
-const question = (index, {type, question, categories, answers, correctAnswer, fractions, useLetters, feedback, single}, shuffle) => { 
+const question = (index, {type, question, categories, answers, correctAnswer, fractions, useLetters, feedback, single, tags}, shuffle) => { 
 	if (type === "category"){
 		return categoryHierarchy(categories);
 	}
@@ -34,6 +34,7 @@ const question = (index, {type, question, categories, answers, correctAnswer, fr
 			<text><![CDATA[${question}]]></text>
 		</questiontext>
 		${questionType(type, question, answers, correctAnswer, fractions, useLetters, feedback, single, shuffle)}${feedback ? `\n\t\t<generalfeedback><text>${feedback}</text></generalfeedback>` : ``}
+		${showTags(tags)}
 	</question>
 `.replace('\n\t*\n', '');
 }
@@ -52,14 +53,13 @@ const questionType = (type, question, answers, correctAnswer, fractions, useLett
 			`
 	    }).join("")}`;
     } else if (type === 'truefalse') {
-		console.log('entrou');
 		return `${(answers||[]).map((a,i) => {
 			const fraction = (correctAnswer || []).indexOf(i) === -1 ? "0" : "100";
 				return `<answer format="moodle_auto_format" fraction="${(fractions && fractions[i] !== undefined) ? fractions[i] : fraction}">
 				<text>${(a).toLowerCase()}</text>
 		</answer>
 		`;
-	    }).join("")}${single ?  `\n\t\t<single>true</single>` : ''}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
+	    }).join("")}${single ?  `\n\t\t<single>true</single>` : ''}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}`;
 	} else {
 		return `${(answers||[]).map((a,i) => {
 			const fraction = (correctAnswer || []).indexOf(i) === -1 ? "0" : "100";
@@ -67,8 +67,20 @@ const questionType = (type, question, answers, correctAnswer, fractions, useLett
 				<text><![CDATA[${a}]]></text>
 		</answer>
 		`;
-	    }).join("")}${single ?  `\n\t\t<single>true</single>` : ''}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
+	    }).join("")}${single ?  `\n\t\t<single>true</single>` : (answers.length > 1 ? `\n\t\t<single>false</single>` : '')}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
 	}
 	
+};
+
+const showTags = tags => {
+    if(tags && tags.length > 0){
+        let result = `<tags>\n`;
+        result += tags.map(tag => {
+            return `        <tag>\n            <text>${tag}</text>\n        </tag>`;
+        }).join('\n');
+        result +=  `\n    </tags>`;
+        return result;
+    }
+    return '';
 };
 export default moodleString;
