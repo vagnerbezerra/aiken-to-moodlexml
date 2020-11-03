@@ -28,7 +28,7 @@ const question = (index, {type, name, question, categories, answers, correctAnsw
 	return `	<!-- Question entry ${index} -->
 	<question type="${type}">
 		<name>
-			<text><![CDATA[${name}]]></text>
+			<text><![CDATA[${(name) ? name : ''}]]></text>
 		</name>
 		<questiontext format="html">
 			<text><![CDATA[${question}]]></text>
