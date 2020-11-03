@@ -67,7 +67,7 @@ const questionType = (type, question, answers, correctAnswer, fractions, useLett
 				<text><![CDATA[${a}]]></text>
 		</answer>
 		`;
-	    }).join("")}${single ?  `\n\t\t<single>true</single>` : (answers.length > 1 ? `\n\t\t<single>false</single>` : '')}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
+	    }).join("")}${single ?  `\n\t\t<single>true</single>` : (answers && answers.length > 1 ? `\n\t\t<single>false</single>` : '')}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
 	}
 	
 };
