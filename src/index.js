@@ -114,9 +114,9 @@ const aikenToMoodleXML = (contents, callback, options = {}) => {
         }
       } else if (question.type === 'truefalse') {
         if (options.nsnc) {
-          question.type = 'multichoice';
+          question.type = 'truefalse';
         }
-        question.answers = [options.lang !== 'es' ? 'True' : 'Verdadero', options.lang !== 'es' ? 'False' : 'Falso'];
+        question.answers = [options.lang !== 'es' ? 'true' : 'Verdadero', options.lang !== 'es' ? 'false' : 'Falso'];
         const correctAnswerExists = question.correctAnswer && question.correctAnswer.length;
         question.correctAnswer = (correctAnswerExists && question.correctAnswer[0]) ? [0] : [1];
         if (options.penalty) {

@@ -50,8 +50,16 @@ const questionType = (type, question, answers, correctAnswer, fractions, useLett
 			</subquestion>
 			${shuffle ? "<shuffleanswers>true</shuffleanswers>":""}
 			`
-	}).join("")}`;
-
+	    }).join("")}`;
+    } else if (type === 'truefalse') {
+		console.log('entrou');
+		return `${(answers||[]).map((a,i) => {
+			const fraction = (correctAnswer || []).indexOf(i) === -1 ? "0" : "100";
+				return `<answer format="moodle_auto_format" fraction="${(fractions && fractions[i] !== undefined) ? fractions[i] : fraction}">
+				<text>${(a).toLowerCase()}</text>
+		</answer>
+		`;
+	    }).join("")}${single ?  `\n\t\t<single>true</single>` : ''}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
 	} else {
 		return `${(answers||[]).map((a,i) => {
 			const fraction = (correctAnswer || []).indexOf(i) === -1 ? "0" : "100";
@@ -59,7 +67,7 @@ const questionType = (type, question, answers, correctAnswer, fractions, useLett
 				<text><![CDATA[${a}]]></text>
 		</answer>
 		`;
-	}).join("")}${single ?  `\n\t\t<single>true</single>` : ''}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
+	    }).join("")}${single ?  `\n\t\t<single>true</single>` : ''}${useLetters === false ? `\n\t\t<answernumbering>123</answernumbering>` : ''}${shuffle ? `\n\t\t<shuffleanswers>true</shuffleanswers>` : ''}`;
 	}
 	
 };
