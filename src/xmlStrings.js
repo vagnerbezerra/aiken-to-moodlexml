@@ -21,14 +21,14 @@ const categoryHierarchy = (categories) => {
 	return defCats.map((c,i)=>category(defCats.slice(0,i+1).join("/"))).join("");
 }
 
-const question = (index, {type, question, categories, answers, correctAnswer, fractions, useLetters, feedback, single, tags}, shuffle) => { 
+const question = (index, {type, name, question, categories, answers, correctAnswer, fractions, useLetters, feedback, single, tags}, shuffle) => { 
 	if (type === "category"){
 		return categoryHierarchy(categories);
 	}
 	return `	<!-- Question entry ${index} -->
 	<question type="${type}">
 		<name>
-			<text><![CDATA[${question}]]></text>
+			<text><![CDATA[${name}]]></text>
 		</name>
 		<questiontext format="html">
 			<text><![CDATA[${question}]]></text>

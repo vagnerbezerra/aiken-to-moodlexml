@@ -2,6 +2,7 @@ const moodleString = require('./xmlStrings');
 
 const availExercises = ['category', 'multichoice', 'essay', 'shortanswer', 'truefalse', 'description', 'cloze', 'numerical', 'matching', 'order'];
 const answerRegex = new RegExp(/^\s*answer:\s*/i);
+const nameRegex = new RegExp(/^\s*name:\s*/i);
 const tagRegex = new RegExp(/^\s*tag:\s*/i);
 const gfeedRegex = new RegExp(/^\s*gfeed\.\s*/i);
 const matchRegex = new RegExp(/^\s*match:?\s*/i);
@@ -104,7 +105,8 @@ const aikenToMoodleXML = (contents, callback, options = {}) => {
                 return r;
               }
             });
-          console.log(question.tags);
+        } else if (nameRegex.test(lines[i])) {
+          question.name = lines[i].replace(nameRegex, '').replace('\r', '').escapeCode();
         } else {
           question.question += `\n${lines[i]}`;
         }
